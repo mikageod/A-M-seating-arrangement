@@ -1,3 +1,168 @@
-<html>
-  <body>Test</body>
+<!DOCTYPE html>
+<html lang="el">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Βρες την θέση σου</title>
+
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #f8f3f0;
+        margin: 0;
+        padding: 0;
+        color: #333;
+    }
+
+    h1 {
+        text-align: center;
+        margin-top: 40px;
+        font-size: 32px;
+        color: #7a4e4d;
+    }
+
+    .container {
+        max-width: 450px;
+        margin: 40px auto;
+        background: white;
+        padding: 30px;
+        border-radius: 12px;
+        box-shadow: 0 4px 16px rgba(0,0,0,0.1);
+    }
+
+    label {
+        font-weight: bold;
+        margin-top: 15px;
+        display: block;
+        color: #5e3c3b;
+    }
+
+    input {
+        width: 100%;
+        padding: 12px;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        margin-top: 6px;
+        font-size: 16px;
+    }
+
+    button {
+        width: 100%;
+        margin-top: 25px;
+        padding: 14px;
+        font-size: 18px;
+        background: #7a4e4d;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        opacity: 0.5;
+        pointer-events: none;
+        transition: 0.3s;
+    }
+
+    button.enabled {
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    .result {
+        margin-top: 30px;
+        padding: 20px;
+        background: #fff7f4;
+        border-radius: 10px;
+        border-left: 4px solid #7a4e4d;
+        display: none;
+    }
+
+    .not-found {
+        margin-top: 20px;
+        padding: 15px;
+        background: #ffe6e6;
+        border-left: 4px solid #cc0000;
+        border-radius: 8px;
+        display: none;
+    }
+</style>
+
+</head>
+<body>
+
+<h1>Βρες την θέση σου</h1>
+
+<div class="container">
+
+    <label>Όνομα</label>
+    <input id="firstName" type="text" placeholder="π.χ. Βασίλης">
+
+    <label>Επίθετο</label>
+    <input id="lastName" type="text" placeholder="π.χ. Γεωργιάδης">
+
+    <button id="submitBtn">Υποβολή</button>
+
+    <div class="result" id="resultBox"></div>
+    <div class="not-found" id="notFoundBox">Δε βρέθηκε καταχώρηση.</div>
+
+</div>
+
+<script>
+    const button = document.getElementById("submitBtn");
+    const first = document.getElementById("firstName");
+    const last = document.getElementById("lastName");
+    const resultBox = document.getElementById("resultBox");
+    const notFound = document.getElementById("notFoundBox");
+
+    const greekRegex = /^[Α-Ωα-ωΆ-Ώά-ώ\s]+$/;
+
+    const data = [
+        { last: "Γεωργιάδης", first: "Βασίλης", people: 2, table: 1 },
+        { last: "Γεωργιάδου", first: "Ειρήνη", people: 7, table: 3 },
+        { last: "Γεωργιάδη", first: "Λίνα", people: 4, table: 2 },
+        { last: "Γεωργιάδης", first: "Μάριος", people: 4, table: 1 },
+        { last: "Γεωργιάδης", first: "Παντελής", people: 3, table: 2 },
+        { last: "Γεωργιάδου", first: "Πόπη", people: 2, table: 2 },
+        { last: "Γεωργιάδου", first: "Ραφαέλλα", people: 2, table: 1 },
+        { last: "Γεωργιάδης", first: "Σάββας", people: 2, table: 1 }
+    ];
+
+    function validate() {
+        if (
+            first.value.trim() !== "" &&
+            last.value.trim() !== "" &&
+            greekRegex.test(first.value.trim()) &&
+            greekRegex.test(last.value.trim())
+        ) {
+            button.classList.add("enabled");
+        } else {
+            button.classList.remove("enabled");
+        }
+    }
+
+    first.addEventListener("input", validate);
+    last.addEventListener("input", validate);
+
+    button.addEventListener("click", () => {
+        const f = first.value.trim();
+        const l = last.value.trim();
+
+        const entry = data.find(x =>
+            x.first === f && x.last === l
+        );
+
+        if (entry) {
+            notFound.style.display = "none";
+            resultBox.style.display = "block";
+            resultBox.innerHTML = `
+                <strong>${entry.first} ${entry.last}</strong><br><br>
+                Άτομα: ${entry.people}<br>
+                Τραπέζι: ${entry.table}
+            `;
+        } else {
+            resultBox.style.display = "none";
+            notFound.style.display = "block";
+        }
+    });
+</script>
+
+</body>
 </html>
