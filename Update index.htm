@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Find Your Number</title>
+</head>
+<body>
+    <h2>Enter your name</h2>
+    <input id="nameInput" type="text" placeholder="Write your name...">
+    <button onclick="findNumber()">Submit</button>
+
+    <p id="result"></p>
+
+    <script>
+        let data = {};
+
+        // Load data.json (the file with all names + numbers)
+        fetch("data.json")
+            .then(r => r.json())
+            .then(d => data = d);
+
+        function normalize(text) {
+            return text
+                .toLowerCase()
+                .normalize("NFD")
+                .replace(/[\u0300-\u036f]/g, "")
+                .replace(/[^a-zA-Zα-ωΑ-Ω0-9 ]/g, "");
+        }
+
+        function findNumber() {
+            let input = document.getElementById("nameInput").value;
+            let clean = normalize(input);
+
+            let number = data[clean];
+
+            if (number) {
+                document.getElementById("result").innerText = "Your number: " + number;
+            } else {
+                document.getElementById("result").innerText = "Name not found";
+            }
+        }
+    </script>
+</body>
+</html>
